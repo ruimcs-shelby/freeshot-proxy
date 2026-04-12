@@ -3,17 +3,17 @@
         {
             "name": "CMTV",
             "url": "https://freeshot.live/live-tv/cmtv/330",
-            "tokenizedUrlKey": "CMTVPT"
+            "tokenizedUrlKey": "CMTVPT/index"
         },
         {
-            "name": "CMTVALT",
-            "url": "https://freeshot.live/live-tv/cmtv/330",
-            "tokenizedUrlKey": "CMTVPT/tracks-v1"
+            "name": "24KITCHEN",
+            "url": "https://freeshot.live/live-tv/24kitchen/439",
+            "tokenizedUrlKey": "24KitchenPT/index"
         },
         {
             "name": "NOW",
             "url": "https://freeshot.live/live-tv/newsnow-portugal/778",
-            "tokenizedUrlKey": "NewsNowPT"
+            "tokenizedUrlKey": "NewsNowPT/index"
         },
         {
             "name": "SPORTTV+",
@@ -114,11 +114,6 @@
             "name": "BENFICATVALT2",
             "url": "https://freeshot.live/live-tv/benfica-tv-extra-ii/359",
             "tokenizedUrlKey": "BTV1"
-        },
-        {
-            "name": "24KITCHEN",
-            "url": "https://freeshot.live/live-tv/24kitchen/439",
-            "tokenizedUrlKey": "24KitchenPT"
         }
     ]
 }

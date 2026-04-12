@@ -1,3 +1,4 @@
 {
-    "chromePath": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+    "chromePath": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "serverName": "server001"
 }

@@ -68,7 +68,7 @@ getConfig();
 
 async function updateFreeshotTokens() {
   // Path to your local Chrome/Chromium
-  const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+  const chromePath = config.chromePath;
 
   const browser = await puppeteer.launch({
     executablePath: chromePath,

@@ -46,76 +46,76 @@ https://video-auth7.iol.pt/live_cnn/live_cnn/playlist.m3u8?wmsAuthSign=c2VydmVyX
 #https://github.com/LITUATUI/M3UPT/raw/refs/heads/main/M3U/CNN_Portugal.m3u
 
 #EXTINF:-1, CMTV
-http://192.168.0.25:3000/play/CMTV
+http://192.168.0.45:3000/play/CMTV
 
 #EXTINF:-1, CMTV ALT
-http://192.168.0.25:3000/play/CMTVALT
+http://192.168.0.45:3000/play/CMTVALT
 
 #EXTINF:-1, NOW
-http://192.168.0.25:3000/play/NOW
+http://192.168.0.45:3000/play/NOW
 
 #EXTINF:-1, 24 KITCHEN
-http://192.168.0.25:3000/play/24KITCHEN
+http://192.168.0.45:3000/play/24KITCHEN
 
 #EXTINF:-1, Sport TV 1
-http://192.168.0.25:3000/play/SPORTTV1
+http://192.168.0.45:3000/play/SPORTTV1
 
 #EXTINF:-1, Sport TV 1 (alternativo)
-http://192.168.0.25:3000/play/SPORTTV1ALT
+http://192.168.0.45:3000/play/SPORTTV1ALT
 
 #EXTINF:-1, Sport TV 2
-http://192.168.0.25:3000/play/SPORTTV2
+http://192.168.0.45:3000/play/SPORTTV2
 
 #EXTINF:-1, Sport TV 2 (alternativo)
-http://192.168.0.25:3000/play/SPORTTV2ALT
+http://192.168.0.45:3000/play/SPORTTV2ALT
 
 #EXTINF:-1, Sport TV 3
-http://192.168.0.25:3000/play/SPORTTV3
+http://192.168.0.45:3000/play/SPORTTV3
 
 #EXTINF:-1, Sport TV 3 (alternativo)
-http://192.168.0.25:3000/play/SPORTTV3
+http://192.168.0.45:3000/play/SPORTTV3
 
 #EXTINF:-1, Sport TV 4
-http://192.168.0.25:3000/play/SPORTTV4
+http://192.168.0.45:3000/play/SPORTTV4
 
 #EXTINF:-1, Sport TV 5
-http://192.168.0.25:3000/play/SPORTTV5
+http://192.168.0.45:3000/play/SPORTTV5
 
 #EXTINF:-1, Sport TV 6
-http://192.168.0.25:3000/play/SPORTTV6
+http://192.168.0.45:3000/play/SPORTTV6
 
 #EXTINF:-1, Sport TV 7
-http://192.168.0.25:3000/play/SPORTTV7
+http://192.168.0.45:3000/play/SPORTTV7
 
 #EXTINF:-1, ELEVEN 1
-http://192.168.0.25:3000/play/ELEVEN1
+http://192.168.0.45:3000/play/ELEVEN1
 
 #EXTINF:-1, ELEVEN 2
-http://192.168.0.25:3000/play/ELEVEN2
+http://192.168.0.45:3000/play/ELEVEN2
 
 #EXTINF:-1, DAZN 1
-http://192.168.0.25:3000/play/DAZN1
+http://192.168.0.45:3000/play/DAZN1
 
 #EXTINF:-1, DAZN 2
-http://192.168.0.25:3000/play/DAZN2
+http://192.168.0.45:3000/play/DAZN2
 
 #EXTINF:-1, DAZN 3
-http://192.168.0.25:3000/play/DAZN3
+http://192.168.0.45:3000/play/DAZN3
 
 #EXTINF:-1, DAZN 4
-http://192.168.0.25:3000/play/DAZN4
+http://192.168.0.45:3000/play/DAZN4
 
 #EXTINF:-1, BENFICA TV
-http://192.168.0.25:3000/play/BENFICATV
+http://192.168.0.45:3000/play/BENFICATV
 
 #EXTINF:-1, BENFICA TV (alternativo 1)
-http://192.168.0.25:3000/play/BENFICATVALT1
+http://192.168.0.45:3000/play/BENFICATVALT1
 
 #EXTINF:-1, BENFICA TV (alternativo 2)
-http://192.168.0.25:3000/play/BENFICATVALT2
+http://192.168.0.45:3000/play/BENFICATVALT2
 
 #EXTINF:-1, SPORTING TV
-http://192.168.0.25:3000/play/SPORTINGTV
+http://192.168.0.45:3000/play/SPORTINGTV
 
 #EXTINF:-1 group-title="TV" group-title="TV" tvg-id="EuronewsPortuguese.fr" tvg-logo="https://raw.githubusercontent.com/LITUATUI/M3UPT/main/logos/euronews-logo-225x225.png",Euronews PT
 #https://euronews-live-por-pt.fast.rakuten.tv/v1/manifest/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6572/7392d4f0-7e24-4dbe-8482-f165e712eeed/5.m3u8

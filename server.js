@@ -33,6 +33,9 @@ import fs from "fs";
 // Channel list
 let channels = [];
 
+// Config
+let config = null;
+
 // #endregion Globals
 
 // #region Express Routes
@@ -57,13 +60,19 @@ app.get("/play/:channel", (req, res) => {
 
 // #region public functions
 
+function getConfig() {
+  const rawData = fs.readFileSync(Constants.configFile, "utf-8");
+  config = JSON.parse(rawData);
+}
+getConfig();
+
 async function updateFreeshotTokens() {
   // Path to your local Chrome/Chromium
   const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 
   const browser = await puppeteer.launch({
     executablePath: chromePath,
-    headless: false,
+    headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 

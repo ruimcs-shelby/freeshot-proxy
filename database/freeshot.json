@@ -6,6 +6,11 @@
             "tokenizedUrlKey": "CMTVPT"
         },
         {
+            "name": "CMTVALT",
+            "url": "https://freeshot.live/live-tv/cmtv/330",
+            "tokenizedUrlKey": "CMTVPT/tracks-v1"
+        },
+        {
             "name": "NOW",
             "url": "https://freeshot.live/live-tv/newsnow-portugal/778",
             "tokenizedUrlKey": "NewsNowPT"

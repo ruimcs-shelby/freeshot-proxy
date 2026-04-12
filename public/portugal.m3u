@@ -41,12 +41,15 @@ https://sicnot.live.impresa.pt/sicnot.m3u8
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:149.0) Gecko/20100101 Firefox/149.0
 https://video-auth7.iol.pt/live_cnn/live_cnn/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9NC83LzIwMjYgMTI6MTE6NTcgUE0maGFzaF92YWx1ZT1qaklWcWc1TUlqUHVTVk5yVzBXUThRPT0mdmFsaWRtaW51dGVzPTE0NDAmaWQ9YmY4NDk4M2ItZmU4Mi00YzQ0LTkxNTgtZDc5OTBlNjUzMDA1/
 
-#EXTINF:-1 group-title="TV" tvg-id="CNNPortugal.pt" tvg-logo="https://raw.githubusercontent.com/LITUATUI/M3UPT/main/logos/CNN-Portugal.png",CNN Portugal
+#EXTINF:-1 group-title="TV" tvg-id="CNNPortugal.pt" tvg-logo="https://raw.githubusercontent.com/LITUATUI/M3UPT/main/logos/CNN-Portugal.png",CNN Portugal2
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:149.0) Gecko/20100101 Firefox/149.0
 #https://github.com/LITUATUI/M3UPT/raw/refs/heads/main/M3U/CNN_Portugal.m3u
 
 #EXTINF:-1, CMTV
 http://192.168.0.25:3000/play/CMTV
+
+#EXTINF:-1, CMTV ALT
+http://192.168.0.25:3000/play/CMTVALT
 
 #EXTINF:-1, NOW
 http://192.168.0.25:3000/play/NOW

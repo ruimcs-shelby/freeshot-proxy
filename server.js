@@ -26,6 +26,9 @@ import puppeteer from "puppeteer";
 // File System
 import fs from "fs";
 
+// AXIOS - DEPENDS ON NEW ROUTE - DELETE AND UNINSTALL IF NOT NECESSARY
+import axios from "axios";
+
 // #endregion Imports
 
 // #region Globals
@@ -40,19 +43,53 @@ let config = null;
 
 // #region Express Routes
 
-app.get("/play/:channel", (req, res) => {
+// OLD VERSION
+// app.get("/play/:channel", (req, res) => {
+//   const channel = channels.find(c => c.name == req.params.channel);
+//   Logger.log(`Channel ${req.params.channel}: ${JSON.stringify(channel)}`);
+//   Logger.log(`Channels: ${JSON.stringify(channels)}`);
+//   if (channel === undefined || channel === null) {
+//     res.status(404).send(Constants.errorChannelNotFound);
+//     Logger.error(`Route /play/:${req.params.channel}: 404 - ${Constants.errorChannelNotFound}`);
+//   } else if (channel.tokenizedUrl === undefined || channel.tokenizedUrl === null) {
+//     res.status(500).send(Constants.errorChannelTokenNotDefined);
+//     Logger.error(`Route /play/:${req.params.channel}: 500 - ${Constants.errorChannelTokenNotDefined}`);
+//   } else {
+//     res.redirect(302, channel.tokenizedUrl);
+//     Logger.log(`Route /play/:${req.params.channel}: 302 - Redirected to: ${channel.tokenizedUrl}`)
+//   }
+// });
+
+// TEST VERSION
+app.get("/play/:channel", async (req, res) => {
   const channel = channels.find(c => c.name == req.params.channel);
-  Logger.log(`Channel ${req.params.channel}: ${JSON.stringify(channel)}`);
-  Logger.log(`Channels: ${JSON.stringify(channels)}`);
-  if (channel === undefined || channel === null) {
-    res.status(404).send(Constants.errorChannelNotFound);
-    Logger.error(`Route /play/:${req.params.channel}: 404 - ${Constants.errorChannelNotFound}`);
-  } else if (channel.tokenizedUrl === undefined || channel.tokenizedUrl === null) {
-    res.status(500).send(Constants.errorChannelTokenNotDefined);
-    Logger.error(`Route /play/:${req.params.channel}: 500 - ${Constants.errorChannelTokenNotDefined}`);
-  } else {
-    res.redirect(302, channel.tokenizedUrl);
-    Logger.log(`Route /play/:${req.params.channel}: 302 - Redirected to: ${channel.tokenizedUrl}`)
+  
+  if (!channel || !channel.tokenizedUrl) {
+    return res.status(404).send(Constants.errorChannelNotFound);
+  }
+
+  try {
+    // 1. Fetch the actual stream from the tokenized URL
+    const streamResponse = await axios({
+      method: 'get',
+      url: channel.tokenizedUrl,
+      responseType: 'stream',
+      headers: {
+        // Optional: Mirror the User-Agent if the provider requires it
+        'User-Agent': req.headers['user-agent'] 
+      }
+    });
+
+    // 2. Forward the content-type (application/x-mpegURL for m3u8)
+    res.setHeader('Content-Type', streamResponse.headers['content-type']);
+    
+    // 3. Pipe the stream data directly to the TV
+    streamResponse.data.pipe(res);
+
+    Logger.log(`Proxying ${req.params.channel} to ${channel.tokenizedUrl}`);
+  } catch (error) {
+    Logger.error(`Proxy Error: ${error.message}`);
+    res.status(500).send("Stream Proxy Error");
   }
 });
 

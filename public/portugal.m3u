@@ -48,9 +48,6 @@ https://video-auth7.iol.pt/live_cnn/live_cnn/playlist.m3u8?wmsAuthSign=c2VydmVyX
 #EXTINF:-1, CMTV
 http://server001:3000/play/CMTV
 
-#EXTINF:-1, CMTV ALT
-http://server001:3000/play/CMTVALT
-
 #EXTINF:-1, NOW
 http://server001:3000/play/NOW
 
@@ -73,7 +70,7 @@ http://server001:3000/play/SPORTTV2ALT
 http://server001:3000/play/SPORTTV3
 
 #EXTINF:-1, Sport TV 3 (alternativo)
-http://server001:3000/play/SPORTTV3
+http://server001:3000/play/SPORTTV3ALT
 
 #EXTINF:-1, Sport TV 4
 http://server001:3000/play/SPORTTV4

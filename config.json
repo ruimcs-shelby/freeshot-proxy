@@ -1,4 +1,8 @@
 {
     "chromePath": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-    "serverName": "server001"
+    "serverName": "server001",
+    "defaultPlaylist": {
+        "input": "public/portugal.m3u",
+        "output": "public/pt-ip.m3u"
+    }
 }

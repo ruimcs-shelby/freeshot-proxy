@@ -1,5 +1,8 @@
 // #region Imports
 
+// OS
+import { networkInterfaces } from "os";
+
 // Custom
 import { Channel } from "./src/datatype/channel.js";
 import { Constants } from "./src/utils/constants.js";
@@ -24,11 +27,15 @@ app.use(cors());
 import puppeteer from "puppeteer";
 
 // File System
-import fs from "fs";
+import fs, { readFile } from "fs";
+import readline from "readline";
 
 // #endregion Imports
 
 // #region Globals
+
+// Constants
+const ipFamilyV4 = "IPV4";
 
 // Channel list
 let channels = [];
@@ -60,11 +67,30 @@ app.get("/play/:channel", (req, res) => {
 
 // #region public functions
 
+function getIpAddress() {
+  const nets = networkInterfaces();
+  const results = Object.create(null);
+
+  // Just in case if for any reason, the ip is not calculated,
+  // return the default hostname
+  let ipaddress = "server001.local";
+
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      // Skip over non-IPv4 and internal (loopback) addresses
+      if (net.family === 'IPv4' && !net.internal) {
+        ipaddress = net.address;
+      }
+    }
+  }
+  return ipaddress;
+}
+
 function getConfig() {
   const rawData = fs.readFileSync(Constants.configFile, "utf-8");
   config = JSON.parse(rawData);
 }
-getConfig();
+
 
 async function updateFreeshotTokens() {
   // Path to your local Chrome/Chromium
@@ -163,28 +189,73 @@ async function getFreeshotChannels() {
 
   });
 }
-getFreeshotChannels()
-  .then(
-    (result) => {
-      channels = result;
-
-      // Even though this is being called on an interval, it's intended to make an explicit call at boot time
-      updateFreeshotTokens();
-    }
-  )
-  .catch(
-    (err) => {
-      Logger.error("[ERROR] getFreeshotChannels(): " + err);
-    });
 
 // #endregion public functions
 
-// #region Express App
+// <summary>
+//  This function fetches the m3u playlist under the 'public' menu.
+//  For each item, the server name is replaced with the IP address, to workaround local DNS issues 
+// TODO: Use a stream like a normal person
+// </summary>
+async function transformPlaylistHostUrlToIpAddress(defaultPlaylist, ipaddress) {
+  const fileStream = fs.createReadStream(defaultPlaylist.input);
 
-app.listen(expressPort, () => {
-  Logger.log(`Express listen on http://localhost:${expressPort}`);
-});
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity // Handles both \n and \r\n
+  });
 
-app.use(express.static(expressStaticPath));
+  const outputStream = fs.createWriteStream(defaultPlaylist.output);
 
-// #endregion Express App
+  for await (const line of rl) {
+    let transformedLine = line;
+    if (line.startsWith("http://")) {
+      const url = new URL(line);
+
+      // this will enforce the DNS name to local ip
+      url.hostname = ipaddress;
+
+      transformedLine = url.href;
+    }
+    
+    outputStream.write(transformedLine + '\n');
+  }
+  
+}
+
+async function main() {
+  await getConfig();
+
+  const ipaddress = getIpAddress();
+  await transformPlaylistHostUrlToIpAddress(config.defaultPlaylist, ipaddress);
+
+  getFreeshotChannels()
+    .then(
+      (result) => {
+        channels = result;
+
+        // Even though this is being called on an interval, it's intended to make an explicit call at boot time
+        updateFreeshotTokens();
+      }
+    )
+    .catch(
+      (err) => {
+        Logger.error("[ERROR] getFreeshotChannels(): " + err);
+      });
+
+  
+
+  // #region Express App
+
+  app.listen(expressPort, () => {
+    const currentIp = getIpAddress();
+    Logger.log(`Express listen on http://localhost:${expressPort}`);
+    Logger.log(`IPADDRESS: ${currentIp}`);
+  });
+
+  app.use(express.static(expressStaticPath));
+
+  // #endregion Express App
+}
+
+main();

@@ -6,6 +6,11 @@
             "tokenizedUrlKey": "CMTVPT/index"
         },
         {
+            "name": "CNN",
+            "url": "https://cnnportugal.iol.pt/direto",
+            "tokenizedUrlKey": "live_cnn"
+        },
+        {
             "name": "24KITCHEN",
             "url": "https://freeshot.live/live-tv/24kitchen/439",
             "tokenizedUrlKey": "24KitchenPT/index"
@@ -26,18 +31,8 @@
             "tokenizedUrlKey": "SPT1"
         },
         {
-            "name": "SPORTTV1ALT",
-            "url": "https://freeshot.live/live-tv/sport-tv-1-extra-i/315",
-            "tokenizedUrlKey": "SPT1"
-        },
-        {
             "name": "SPORTTV2",
             "url": "https://freeshot.live/live-tv/sport-tv-2-pt/3",
-            "tokenizedUrlKey": "SPT2"
-        },
-        {
-            "name": "SPORTTV2ALT",
-            "url": "https://freeshot.live/live-tv/sport-tv-2-extra-i/319",
             "tokenizedUrlKey": "SPT2"
         },
         {
@@ -114,6 +109,16 @@
             "name": "BENFICATVALT2",
             "url": "https://freeshot.live/live-tv/benfica-tv-extra-ii/359",
             "tokenizedUrlKey": "BTV1"
+        },
+        {
+            "name": "SPORTTV1ALT",
+            "url": "https://freeshot.live/live-tv/sport-tv-1-extra-i/315",
+            "tokenizedUrlKey": "SPT1"
+        },
+        {
+            "name": "SPORTTV2ALT",
+            "url": "https://freeshot.live/live-tv/sport-tv-2-extra-i/319",
+            "tokenizedUrlKey": "SPT2"
         }
     ]
 }

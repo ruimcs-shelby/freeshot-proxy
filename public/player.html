@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>IPTV Player</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background: black;
+            color: white;
+        }
+
+        iframe {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            border: 0px;
+        }
+
+        #status {
+            font-family: sans-serif;
+            text-align: center;
+            padding-top: 20%;
+        }
+    </style>
+    <script type="text/javascript">
+        let currentChannel = "";
+        async function bodyOnLoad() {
+            // Routine to obtain last channel requested
+            setInterval(()=> {
+                fetch(`http://server002:3000/directplay/getcurrentchannel`).then(
+                    response => {
+                        if (response.status === 200) {
+                            response.text().then((channelString) => {
+                                const channel = JSON.parse(channelString);
+                                const ifrFreeshot = document.getElementById("ifrFreeshot");
+
+                                if (ifrFreeshot.src != channel.directPlayLink) {
+                                    ifrFreeshot.src = channel.directPlayLink;
+                                }
+                            });
+                        } else {
+                            console.log("Ocorreu um erro!");
+                        }
+                    }
+                ).catch(
+                    error => {
+                        console.error(error);
+                    }
+                );
+            }, 2000);
+        }
+    </script>
+</head>
+
+<body onload="bodyOnLoad()">
+    <iframe id="ifrFreeshot"></iframe>
+</body>
+
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            font-size: large;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        div {
+            box-sizing: border-box;
+            float: left;
+            position: relative;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #dvMain {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        #dvMenu {
+            width: 100%;
+            height: calc(100% - 50px);
+            background-color: lightcyan;
+            overflow-y: auto;
+        }
+
+            .dvMenuItem {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 150px;
+                height: 150px;
+                color: blue;
+                border: 1px solid blue;
+                margin: 10px;
+                background-size: contain;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+            .dvMenuItem:hover {
+                background-color: gray;
+                color: orange;
+                border: 1px solid orange;
+                cursor: pointer;
+            }
+
+        #dvFooter {
+            width: 100%;
+            height: 50px;
+            background-color: aliceblue;
+        }
+
+        p {
+            font-size: medium;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        #pChannelUpdateStatus {
+            width: 100%;
+            height: 100%;
+        }
+
+        a {
+            cursor: pointer;
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        a:hover {
+            background-color: yellow;
+            color: blue;
+        }
+
+        .info {
+            background-color: aquamarine;
+            color: black;
+        }
+
+        .success {
+            background-color: lightgreen;
+            color: black;
+        }
+
+        .warn {
+            background-color: gold;
+            color: black;
+        }
+
+        .error {
+            background-color: brown;
+            color: white;
+        }
+    </style>
+    <script type="text/javascript">
+        function bodyOnLoad() {
+            fetch(`http://server002:3000/directplay/getallchannels`).then(
+                (response) => {
+                    if (response.status === 200) {
+                        response.text().then(channelsAsString => {
+                            const channels = JSON.parse(channelsAsString);
+                            const dvMenu = document.getElementById("dvMenu");
+
+                            for (const channel of channels) {
+                                const dvMenuItem = document.createElement("div");
+                                dvMenuItem.className = "dvMenuItem";
+                                dvMenuItem.onclick = () => {
+                                    updateChannel(channel.name);
+                                }
+
+                                if (channel.hasOwnProperty("img")) {
+                                    const img = document.createElement("img");
+                                    dvMenuItem.style.backgroundImage = `url('${channel.img}')`;
+                                } else {
+                                    dvMenuItem.innerHTML = channel.name;
+                                }
+
+                                dvMenu.appendChild(dvMenuItem);
+                            }
+                        })
+                    }
+                }
+            );
+        }
+
+        function updateChannel(channel) {
+            const divUpdateChannelStatus = document.getElementById("pChannelUpdateStatus");
+            divUpdateChannelStatus.innerHTML = `A mudar para o canal "${channel}"...`;
+            divUpdateChannelStatus.className = "info";
+
+            fetch(`http://server002:3000/directplay/setchannel?channel=${channel}`).then(
+                response => {
+                    if (response.status === 200) {
+                        divUpdateChannelStatus.className = "warn";
+                        divUpdateChannelStatus.innerHTML = `A aguardar que o servidor mude para o canal "${channel}"...`;
+                    } else {
+                        divUpdateChannelStatus.className = "error";
+                        divUpdateChannelStatus.innerHTML = `Ocorreu um erro ao mudar para o canal ${channel}!`;
+                    }
+                }
+            ).catch(err => {
+                divUpdateChannelStatus.className = "error";
+                divUpdateChannelStatus.innerHTML = `Ocorreu um erro ao mudar para o canal "${channel}"...`;
+            });
+        }
+    </script>
+</head>
+
+<body onload="bodyOnLoad()">
+    <div id="dvMain">
+        <div id="dvMenu">
+            <!-- Filled by bodyOnLoad() -->
+        </div>
+        <div id="dvFooter">
+            <p id="pChannelUpdateStatus"></p>
+        </div>
+    </div>
+</body>
+
+</html>

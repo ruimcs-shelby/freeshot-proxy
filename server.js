@@ -37,6 +37,10 @@ import readline from "readline";
 // Constants
 const ipFamilyV4 = "IPV4";
 
+// TODO: store this data on a file
+// Current Channel 
+let currentChannel = "";
+
 // Channel list
 let channels = [];
 
@@ -61,6 +65,23 @@ app.get("/play/:channel", (req, res) => {
     res.redirect(302, channel.tokenizedUrl);
     Logger.log(`Route /play/:${req.params.channel}: 302 - Redirected to: ${channel.tokenizedUrl}`)
   }
+});
+
+app.get("/directplay/setchannel", (req, res) => {
+  currentChannel = req.query.channel;
+  Logger.log(`Set channel request received: ${currentChannel}`);
+  res.status(200).send(currentChannel);
+});
+
+app.get("/directplay/getcurrentchannel", (req, res) => {
+  Logger.log(`Get current channel request received: ${currentChannel}`);
+  const channel = channels.find(c => c.name === currentChannel);
+  const channelAsString = JSON.stringify(channel);
+  res.status(200).send(channelAsString);
+});
+
+app.get("/directplay/getallchannels", (req, res) => {
+  res.status(200).send(JSON.stringify(channels));
 });
 
 // #endregion Express Routes
@@ -128,30 +149,32 @@ async function updateFreeshotTokens() {
   });
 
   for (let channel of channels) {
-    try {
-      // The Magic: Intercept all network traffic
-      await page.setRequestInterception(true);
+    if (channel.isToFetchToken) {
+      try {
+        // The Magic: Intercept all network traffic
+        await page.setRequestInterception(true);
 
-      // Navigate and wait for the player to actually load the stream
-      await page.goto(
-        channel.url,
-        {
-          waitUntil: Constants.pageNetworkIdle2,
-          timeout: Constants.networkIdleTimeOutInMilliseconds
-        }
-      );
+        // Navigate and wait for the player to actually load the stream
+        await page.goto(
+          channel.url,
+          {
+            waitUntil: Constants.pageNetworkIdle2,
+            timeout: Constants.networkIdleTimeOutInMilliseconds
+          }
+        );
 
-      // Sometimes you need to wait a few extra seconds for the JS player to kick in
-      await new Promise(
-        resolve => setTimeout(
-          resolve,
-          Constants.extraTimeoutForJsProcessingInMilliseconds
-        )
-      );
-    } catch (e) {
-      console.error("Sniffing failed:", e.message);
-    } finally {
+        // Sometimes you need to wait a few extra seconds for the JS player to kick in
+        await new Promise(
+          resolve => setTimeout(
+            resolve,
+            Constants.extraTimeoutForJsProcessingInMilliseconds
+          )
+        );
+      } catch (e) {
+        console.error("Sniffing failed:", e.message);
+      } finally {
 
+      }
     }
   }
 
@@ -217,10 +240,10 @@ async function transformPlaylistHostUrlToIpAddress(defaultPlaylist, ipaddress) {
 
       transformedLine = url.href;
     }
-    
+
     outputStream.write(transformedLine + '\n');
   }
-  
+
 }
 
 async function main() {
@@ -243,7 +266,7 @@ async function main() {
         Logger.error("[ERROR] getFreeshotChannels(): " + err);
       });
 
-  
+
 
   // #region Express App
 

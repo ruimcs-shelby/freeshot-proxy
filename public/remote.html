@@ -34,25 +34,26 @@
             overflow-y: auto;
         }
 
-            .dvMenuItem {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 150px;
-                height: 150px;
-                color: blue;
-                border: 1px solid blue;
-                margin: 10px;
-                background-size: contain;
-                background-position: center;
-                background-repeat: no-repeat;
-            }
-            .dvMenuItem:hover {
-                background-color: gray;
-                color: orange;
-                border: 1px solid orange;
-                cursor: pointer;
-            }
+        .dvMenuItem {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 150px;
+            height: 150px;
+            color: blue;
+            border: 1px solid blue;
+            margin: 10px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .dvMenuItem:hover {
+            background-color: gray;
+            color: orange;
+            border: 1px solid orange;
+            cursor: pointer;
+        }
 
         #dvFooter {
             width: 100%;
@@ -103,8 +104,26 @@
         }
     </style>
     <script type="text/javascript">
+        const server = "http://server002:3000";
+        function createRemoteControlTimer() {
+            const updateIntervalInMs = 5000;
+            setInterval(() => {
+                fetch(`${server}/directplay/getcurrentchannel`).then(result => {
+                    const text = result.text();
+                    text.then(parsedText => {
+                        const divUpdateChannelStatus = document.getElementById("pChannelUpdateStatus");
+                        divUpdateChannelStatus.className = "success";
+
+                        const channel = JSON.parse(parsedText);
+                        divUpdateChannelStatus.innerHTML = `O servidor mudou para o canal "${channel.name}".`;
+                    });
+                });
+            }, updateIntervalInMs);
+        }
         function bodyOnLoad() {
-            fetch(`http://server002:3000/directplay/getallchannels`).then(
+            createRemoteControlTimer();
+
+            fetch(`${server}/directplay/getallchannels`).then(
                 (response) => {
                     if (response.status === 200) {
                         response.text().then(channelsAsString => {
@@ -138,7 +157,7 @@
             divUpdateChannelStatus.innerHTML = `A mudar para o canal "${channel}"...`;
             divUpdateChannelStatus.className = "info";
 
-            fetch(`http://server002:3000/directplay/setchannel?channel=${channel}`).then(
+            fetch(`${server}/directplay/setchannel?channel=${channel}`).then(
                 response => {
                     if (response.status === 200) {
                         divUpdateChannelStatus.className = "warn";

@@ -188,25 +188,33 @@
             "name": "SPORTINGTV",
             "url": "https://freeshot.live/live-tv/sporting-tv/337",
             "tokenizedUrlKey": "SPORTING",
-            "isToFetchToken": true
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/SportingTV.php",
+            "img": "images/channels/sportingtv.png"
         },
         {
             "name": "BENFICATV",
             "url": "https://freeshot.live/live-tv/benfica-tv-pt/46",
             "tokenizedUrlKey": "BTV1",
-            "isToFetchToken": true
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/BenficaTV.php",
+            "img": "images/channels/benficatv.jpg"
         },
         {
             "name": "BENFICATVALT1",
             "url": "https://freeshot.live/live-tv/benfica-tv-extra-i/358",
             "tokenizedUrlKey": "BTV1",
-            "isToFetchToken": true
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/BenficaTVx1.php",
+            "img": "images/channels/benficatv.jpg"
         },
         {
             "name": "BENFICATVALT2",
             "url": "https://freeshot.live/live-tv/benfica-tv-extra-ii/359",
             "tokenizedUrlKey": "BTV1",
-            "isToFetchToken": true
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/BenficaTVx2.php",
+            "img": "images/channels/benficatv.jpg"
         },
         {
             "name": "SPORTTV1ALT",

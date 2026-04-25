@@ -1,124 +1,240 @@
 {
     "channels": [
         {
-            "name": "CMTV",
-            "url": "https://freeshot.live/live-tv/cmtv/330",
-            "tokenizedUrlKey": "CMTVPT/index"
+            "name": "RTP1",
+            "url": "https://freeshot.live/live-tv/rtp-1/213",
+            "isToFetchToken": false,
+            "directPlayLink": "https://freeshot.live/embed/RTP1.php",
+            "img": "images/channels/rtp1.jpg"
+        },
+        {
+            "name": "RTP2",
+            "url": "https://freeshot.live/live-tv/rtp-2/234",
+            "isToFetchToken": false,
+            "directPlayLink": "https://freeshot.live/embed/RTP2.php",
+            "img": "images/channels/rtp2.jpg"
+        },
+        {
+            "name": "SIC",
+            "url": "https://freeshot.live/live-tv/sic/36",
+            "isToFetchToken": false,
+            "directPlayLink": "https://freeshot.live/embed/SIC.php",
+            "img": "images/channels/sic.jpg"
+        },
+        {
+            "name": "TVI",
+            "url": "https://freeshot.live/live-tv/tvi/47",
+            "isToFetchToken": false,
+            "directPlayLink": "https://freeshot.live/embed/TVI.php",
+            "img": "images/channels/tvi.jpg"
+        },
+        {
+            "name": "RTP3",
+            "url": "https://freeshot.live/live-tv/rtp-3/335",
+            "isToFetchToken": false,
+            "directPlayLink": "https://freeshot.live/embed/RTP3.php",
+            "img": "images/channels/rtp3.jpg"
+        },
+        {
+            "name": "SICNOTICIAS",
+            "url": "https://freeshot.live/live-tv/sic-noticias/48",
+            "isToFetchToken": false,
+            "directPlayLink": "https://freeshot.live/embed/SICNOTICIAS.php",
+            "img": "images/channels/sic-noticias.png"
         },
         {
             "name": "CNN",
-            "url": "https://cnnportugal.iol.pt/direto",
-            "tokenizedUrlKey": "live_cnn"
+            "url": "https://freeshot.live/live-tv/cnn-portugal/331",
+            "tokenizedUrlKey": "CNN-PT/index",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/CNNPT.php",
+            "img": "images/channels/cnn-portugal.png"
         },
         {
-            "name": "24KITCHEN",
-            "url": "https://freeshot.live/live-tv/24kitchen/439",
-            "tokenizedUrlKey": "24KitchenPT/index"
+            "name": "CMTV",
+            "url": "https://freeshot.live/live-tv/cmtv/330",
+            "tokenizedUrlKey": "CMTVPT/index",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/CMTV.php",
+            "img": "images/channels/cmtv-portugal.jpg"
         },
         {
             "name": "NOW",
             "url": "https://freeshot.live/live-tv/newsnow-portugal/778",
-            "tokenizedUrlKey": "NewsNowPT/index"
+            "tokenizedUrlKey": "NewsNowPT/index",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/NewsNowPT.php",
+            "img": "images/channels/now-portugal.jpg"
+        },
+        {
+            "name": "24KITCHEN",
+            "url": "https://freeshot.live/live-tv/24kitchen/439",
+            "tokenizedUrlKey": "24KitchenPT/index",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/24Kitchen.php"
+        },
+        {
+            "name": "WRC",
+            "url": "https://freeshot.live/live-tv/wrc/777",
+            "tokenizedUrlKey": "24KitchenPT/index",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/WRCPT.php",
+            "img": "images/channels/wrc.jpg"
         },
         {
             "name": "SPORTTV+",
             "url": "https://freeshot.live/live-tv/sport-tv/108",
-            "tokenizedUrlKey": "SPTPlus"
+            "tokenizedUrlKey": "SPTPlus",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/SportTV+.php"
         },
         {
             "name": "SPORTTV1",
             "url": "https://freeshot.live/live-tv/sport-tv-1-pt/1",
-            "tokenizedUrlKey": "SPT1"
+            "tokenizedUrlKey": "SPT1",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/SportTV1.php",
+            "img": "images/channels/sporttv1.png"
         },
         {
             "name": "SPORTTV2",
             "url": "https://freeshot.live/live-tv/sport-tv-2-pt/3",
-            "tokenizedUrlKey": "SPT2"
+            "tokenizedUrlKey": "SPT2",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/SportTV2.php",
+            "img": "images/channels/sporttv2.png"
         },
         {
             "name": "SPORTTV3",
             "url": "https://freeshot.live/live-tv/sport-tv-3-pt/4",
-            "tokenizedUrlKey": "SPT3"
+            "tokenizedUrlKey": "SPT3",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/SportTV3.php",
+            "img": "images/channels/sporttv3.png"
         },
         {
             "name": "SPORTTV4",
             "url": "https://freeshot.live/live-tv/sport-tv-4-pt/5",
-            "tokenizedUrlKey": "SPT4"
+            "tokenizedUrlKey": "SPT4",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/SportTV4.php",
+            "img": "images/channels/sporttv4.png"
         },
         {
             "name": "SPORTTV5",
             "url": "https://freeshot.live/live-tv/sport-tv-5-pt/6",
-            "tokenizedUrlKey": "SPT5"
+            "tokenizedUrlKey": "SPT5",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/SportTV5.php",
+            "img": "images/channels/sporttv5.png"
         },
         {
             "name": "SPORTTV6",
             "url": "https://freeshot.live/live-tv/sport-tv-6/117",
-            "tokenizedUrlKey": "SPT6"
+            "tokenizedUrlKey": "SPT6",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/SportTV6.php",
+            "img": "images/channels/sporttv6.png"
         },
         {
             "name": "SPORTTV7",
             "url": "https://freeshot.live/live-tv/sport-tv-7/120",
-            "tokenizedUrlKey": "SPT7"
-        },
-        {
-            "name": "ELEVEN1",
-            "url": "https://freeshot.live/live-tv/eleven-1-pt-extra-i/340",
-            "tokenizedUrlKey": "ELEVEN1"
-        },
-        {
-            "name": "ELEVEN2",
-            "url": "https://freeshot.live/live-tv/eleven-2-pt-extra-i/342",
-            "tokenizedUrlKey": "ELEVEN2"
+            "tokenizedUrlKey": "SPT7",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/SportTV7.php",
+            "img": "images/channels/sporttv7.png"
         },
         {
             "name": "DAZN1",
             "url": "https://freeshot.live/live-tv/dazn-1-pt/28",
-            "tokenizedUrlKey": "ELEVEN1"
+            "tokenizedUrlKey": "ELEVEN1",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/ElevenSports1PT.php",
+            "img": "images/channels/dazn1.png"
         },
         {
             "name": "DAZN2",
             "url": "https://freeshot.live/live-tv/dazn-2-pt/29",
-            "tokenizedUrlKey": "ELEVEN2"
+            "tokenizedUrlKey": "ELEVEN2",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/ElevenSports2PT.php",
+            "img": "images/channels/dazn2.png"
         },
         {
             "name": "DAZN3",
             "url": "https://freeshot.live/live-tv/dazn-3-pt/30",
-            "tokenizedUrlKey": "DAZN3"
+            "tokenizedUrlKey": "DAZN3",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/ElevenSports3PT.php",
+            "img": "images/channels/dazn3.png"
         },
         {
             "name": "DAZN4",
             "url": "https://freeshot.live/live-tv/dazn-4-pt/31",
-            "tokenizedUrlKey": "DAZN4"
+            "tokenizedUrlKey": "DAZN4",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/ElevenSports4PT.php",
+            "img": "images/channels/dazn4.png"
+        },
+        {
+            "name": "DAZN5",
+            "url": "https://freeshot.live/live-tv/dazn-5-pt/32",
+            "tokenizedUrlKey": "DAZN5",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/ElevenSports5PT.php",
+            "img": "images/channels/dazn5.png"
         },
         {
             "name": "SPORTINGTV",
             "url": "https://freeshot.live/live-tv/sporting-tv/337",
-            "tokenizedUrlKey": "SPORTING"
+            "tokenizedUrlKey": "SPORTING",
+            "isToFetchToken": true
         },
         {
             "name": "BENFICATV",
             "url": "https://freeshot.live/live-tv/benfica-tv-pt/46",
-            "tokenizedUrlKey": "BTV1"
+            "tokenizedUrlKey": "BTV1",
+            "isToFetchToken": true
         },
         {
             "name": "BENFICATVALT1",
             "url": "https://freeshot.live/live-tv/benfica-tv-extra-i/358",
-            "tokenizedUrlKey": "BTV1"
+            "tokenizedUrlKey": "BTV1",
+            "isToFetchToken": true
         },
         {
             "name": "BENFICATVALT2",
             "url": "https://freeshot.live/live-tv/benfica-tv-extra-ii/359",
-            "tokenizedUrlKey": "BTV1"
+            "tokenizedUrlKey": "BTV1",
+            "isToFetchToken": true
         },
         {
             "name": "SPORTTV1ALT",
             "url": "https://freeshot.live/live-tv/sport-tv-1-extra-i/315",
-            "tokenizedUrlKey": "SPT1"
+            "tokenizedUrlKey": "SPT1",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/SportTVx1.php"
         },
         {
             "name": "SPORTTV2ALT",
             "url": "https://freeshot.live/live-tv/sport-tv-2-extra-i/319",
-            "tokenizedUrlKey": "SPT2"
+            "tokenizedUrlKey": "SPT2",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/SportTV2x1.php"
+        },
+        {
+            "name": "ELEVEN1ALT",
+            "url": "https://freeshot.live/live-tv/eleven-1-pt-extra-i/340",
+            "tokenizedUrlKey": "ELEVEN1",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/ElevenSports1PTx1.php"
+        },
+        {
+            "name": "ELEVEN2ALT",
+            "url": "https://freeshot.live/live-tv/eleven-2-pt-extra-i/342",
+            "tokenizedUrlKey": "ELEVEN2",
+            "isToFetchToken": true,
+            "directPlayLink": "https://freeshot.live/embed/ElevenSports2PTx1.php"
         }
     ]
 }

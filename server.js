@@ -195,14 +195,16 @@ async function getFreeshotChannels() {
 
     channels = freeshotData.channels;
 
-    setInterval(
-      () => {
-        if (channels.length > 0) {
-          updateFreeshotTokens();
-        }
-      },
-      Constants.tokenUpdateIntervalInMilliseconds
-    );
+    if (!config.isToUseAsPlayer) {
+      setInterval(
+        () => {
+          if (channels.length > 0) {
+            updateFreeshotTokens();
+          }
+        },
+        Constants.tokenUpdateIntervalInMilliseconds
+      );
+    }
 
     if (channels.length > 0) {
       resolve(channels);
@@ -257,8 +259,11 @@ async function main() {
       (result) => {
         channels = result;
 
-        // Even though this is being called on an interval, it's intended to make an explicit call at boot time
-        updateFreeshotTokens();
+        if (!config.isToUseAsPlayer) {
+          // Even though this is being called on an interval, it's intended to make an explicit call at boot time
+          updateFreeshotTokens();
+        }
+
       }
     )
     .catch(

@@ -39,7 +39,7 @@
             "name": "SICNOTICIAS",
             "url": "https://freeshot.live/live-tv/sic-noticias/48",
             "isToFetchToken": false,
-            "directPlayLink": "https://freeshot.live/embed/SICNOTICIAS.php",
+            "directPlayLink": "https://freeshot.live/embed/SICNoticias.php",
             "img": "images/channels/sic-noticias.png"
         },
         {

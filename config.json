@@ -4,5 +4,6 @@
     "defaultPlaylist": {
         "input": "public/portugal.m3u",
         "output": "public/pt-ip.m3u"
-    }
+    },
+    "isToUseAsPlayer": true
 }

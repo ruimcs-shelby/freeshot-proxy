@@ -47,9 +47,7 @@ const expressStaticPath = path.join(__dirname, "public");
 const app = express();
 app.use(cors());
 app.listen(expressPort, () => {
-    const currentIp = getIpAddress();
     Logger.log(`Express listen on http://localhost:${expressPort}`);
-    Logger.log(`IPADDRESS: ${currentIp}`);
 });
 
 app.use(express.static(expressStaticPath));

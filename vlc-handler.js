@@ -43,20 +43,6 @@ function getConfig() {
     config = JSON.parse(rawData);
 }
 
-// #region Express
-
-const expressPort = 3000;
-const expressStaticPath = path.join(__dirname, "public");
-const app = express();
-app.use(cors());
-app.listen(expressPort, () => {
-    Logger.log(`Express listen on http://localhost:${expressPort}`);
-});
-
-app.use(express.static(expressStaticPath));
-
-// #endregion Express
-
 // #region Express Routes
 
 app.get("/directplay/setchannel", (req, res) => {
@@ -195,4 +181,29 @@ async function updateFreeshotTokens(channel = "") {
     return true;
 }
 
+function getConfig() {
+    const rawData = fs.readFileSync(Constants.configFile, "utf-8");
+    config = JSON.parse(rawData);
+}
+
 // #endregion functions
+
+// #region Main
+
+function bootApp() {
+    getConfig();
+    
+    const expressPort = 3000;
+    const expressStaticPath = path.join(__dirname, "public");
+    const app = express();
+    app.use(cors());
+    app.listen(expressPort, () => {
+        Logger.log(`Express listen on http://localhost:${expressPort}`);
+    });
+
+    app.use(express.static(expressStaticPath));
+}
+
+bootApp();
+
+// #endregion Main

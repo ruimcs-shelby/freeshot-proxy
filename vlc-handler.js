@@ -68,7 +68,7 @@ app.get("/directplay/setchannel", (req, res) => {
         }
     });
 
-    updateFreeshotTokens(currentChannel).then((result) => {
+    updateFreeshotTokens(req, currentChannel).then((result) => {
         // Spawn a new VLC PRocess
         const cvlcCommand = `DISPLAY=:0 cvlc ${channel.tokenizedUrl}`;
         exec(cvlcCommand, (err) => {
@@ -87,7 +87,7 @@ app.get("/directplay/setchannel", (req, res) => {
 
 // #region functions
 
-async function updateFreeshotTokens(channel = "") {
+async function updateFreeshotTokens(req, channel = "") {
 
     // Initiate Browser only if not instantiated yet
     if (browser == null) {

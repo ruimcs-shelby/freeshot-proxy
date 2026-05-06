@@ -39,6 +39,9 @@ let browser = null;
 let page = null;
 
 // #region Express Routes
+const expressPort = 3000;
+const expressStaticPath = path.join(__dirname, "public");
+const app = express();
 
 app.get("/directplay/setchannel", (req, res) => {
     // Ensure first the channel is not already pre-selected
@@ -188,9 +191,6 @@ function getConfig() {
 function bootApp() {
     getConfig();
 
-    const expressPort = 3000;
-    const expressStaticPath = path.join(__dirname, "public");
-    const app = express();
     app.use(cors());
     app.listen(expressPort, () => {
         Logger.log(`Express listen on http://localhost:${expressPort}`);

@@ -2,6 +2,7 @@
 
 // OS
 import { networkInterfaces } from "os";
+import { exec } from "child_process";
 
 // Custom
 import { Channel } from "./src/datatype/channel.js";
@@ -69,7 +70,26 @@ app.get("/play/:channel", (req, res) => {
 
 app.get("/directplay/setchannel", (req, res) => {
   currentChannel = req.query.channel;
+  const channel = channels.find(c => c.name == req.params.channel);
   Logger.log(`Set channel request received: ${currentChannel}`);
+
+  exec("pkill -f cvlc" ,(err) => {
+    if (err) {
+      Logger.warn(`Not possible to kill existing cvlc process: ${err.message}.`);
+    } else {
+      Logger.log(`Process cvlc killed.`);
+    }
+  });
+
+  const cvlcCommand = `DISPLAY=:0 cvlc ${channel.tokenizedUrl}`;
+  exec(cvlcCommand, (err) => {
+    if (err) {
+      Logger.warn(`Not possible to kill existing cvlc process: ${err.message}.`);
+    } else {
+      Logger.log(`Process cvlc killed.`);
+    }
+  });
+
   res.status(200).send(currentChannel);
 });
 
@@ -83,6 +103,8 @@ app.get("/directplay/getcurrentchannel", (req, res) => {
 app.get("/directplay/getallchannels", (req, res) => {
   res.status(200).send(JSON.stringify(channels));
 });
+
+
 
 // #endregion Express Routes
 

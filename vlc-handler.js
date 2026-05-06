@@ -28,6 +28,9 @@ import express from "express";
 // Channel list
 let channels = [];
 
+// Current channel
+let currentChannel = "";
+
 // Config
 let config = null;
 
@@ -77,6 +80,8 @@ app.get("/directplay/setchannel", (req, res) => {
         }
     });
 
+    await updateFreeshotTokens(currentChannel);
+    
     // Spawn a new VLC PRocess
     const cvlcCommand = `DISPLAY=:0 cvlc ${channel.tokenizedUrl}`;
     exec(cvlcCommand, (err) => {
@@ -94,7 +99,7 @@ app.get("/directplay/setchannel", (req, res) => {
 
 // #region functions
 
-async function updateFreeshotTokens() {
+async function updateFreeshotTokens(channel = "") {
 
     // Initiate Browser only if not instantiated yet
     if (browser == null) {
@@ -133,35 +138,61 @@ async function updateFreeshotTokens() {
         request.continue();
     });
 
-    for (let channel of channels) {
-        if (channel.isToFetchToken) {
-            try {
-                // The Magic: Intercept all network traffic
-                await page.setRequestInterception(true);
+    if (channel === undefined || channel === null || channel === "") {
+        for (let channel of channels) {
+            if (channel.isToFetchToken) {
+                try {
+                    // The Magic: Intercept all network traffic
+                    await page.setRequestInterception(true);
 
-                // Navigate and wait for the player to actually load the stream
-                await page.goto(
-                    channel.url,
-                    {
-                        waitUntil: Constants.pageNetworkIdle2,
-                        timeout: Constants.networkIdleTimeOutInMilliseconds
-                    }
-                );
+                    // Navigate and wait for the player to actually load the stream
+                    await page.goto(
+                        channel.url,
+                        {
+                            waitUntil: Constants.pageNetworkIdle2,
+                            timeout: Constants.networkIdleTimeOutInMilliseconds
+                        }
+                    );
 
-                // Sometimes you need to wait a few extra seconds for the JS player to kick in
-                await new Promise(
-                    resolve => setTimeout(
-                        resolve,
-                        Constants.extraTimeoutForJsProcessingInMilliseconds
-                    )
-                );
-            } catch (e) {
-                console.error("Sniffing failed:", e.message);
-            } finally {
+                    // Sometimes you need to wait a few extra seconds for the JS player to kick in
+                    await new Promise(
+                        resolve => setTimeout(
+                            resolve,
+                            Constants.extraTimeoutForJsProcessingInMilliseconds
+                        )
+                    );
+                } catch (e) {
+                    console.error("Sniffing failed:", e.message);
+                } finally {
 
+                }
             }
         }
+    } else {
+        const channel = channels.find(c => c.name == req.params.channel);
+
+        // The Magic: Intercept all network traffic
+        await page.setRequestInterception(true);
+
+        // Navigate and wait for the player to actually load the stream
+        await page.goto(
+            channel.url,
+            {
+                waitUntil: Constants.pageNetworkIdle2,
+                timeout: Constants.networkIdleTimeOutInMilliseconds
+            }
+        );
+
+        // Sometimes you need to wait a few extra seconds for the JS player to kick in
+        await new Promise(
+            resolve => setTimeout(
+                resolve,
+                Constants.extraTimeoutForJsProcessingInMilliseconds
+            )
+        );
     }
+
+    return true;
 }
 
 // #endregion functions

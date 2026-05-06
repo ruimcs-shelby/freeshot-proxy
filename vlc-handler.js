@@ -9,6 +9,10 @@ import { Channel } from "./src/datatype/channel.js";
 import { Constants } from "./src/utils/constants.js";
 import { Logger } from "./src/utils/logger.js";
 
+// Path
+import path from "path";
+const __dirname = import.meta.dirname;
+
 // Cors
 import cors from "cors";
 

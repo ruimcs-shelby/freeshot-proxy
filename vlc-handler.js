@@ -158,6 +158,7 @@ async function updateFreeshotTokens(req, channel = "") {
         }
     } else {
         const channel = channels.find(c => c.name == req.params.channel);
+        Logger.warn(`Channels: ${JSON.stringify(channels)}`);
 
         // The Magic: Intercept all network traffic
         await page.setRequestInterception(true);

@@ -87,7 +87,7 @@ app.get("/directplay/setchannel", (req, res) => {
 
 // #region functions
 
-async function updateFreeshotTokens(req, channel = "") {
+async function updateFreeshotTokens(req, currentChannel = "") {
 
     // Initiate Browser only if not instantiated yet
     if (browser == null) {
@@ -126,7 +126,7 @@ async function updateFreeshotTokens(req, channel = "") {
         request.continue();
     });
 
-    if (channel === undefined || channel === null || channel === "") {
+    if (currentChannel === undefined || currentChannel === null || currentChannel === "") {
         for (let channel of channels) {
             if (channel.isToFetchToken) {
                 try {
@@ -157,8 +157,9 @@ async function updateFreeshotTokens(req, channel = "") {
             }
         }
     } else {
-        const channel = channels.find(c => c.name == req.params.channel);
+        const channel = channels.find(c => c.name == currentChannel);
         Logger.warn(`Channels: ${JSON.stringify(channels)}`);
+        Logger.warn(`Current Channel: ${currentChannel}`);
 
         // The Magic: Intercept all network traffic
         await page.setRequestInterception(true);

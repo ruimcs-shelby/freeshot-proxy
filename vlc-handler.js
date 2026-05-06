@@ -80,19 +80,19 @@ app.get("/directplay/setchannel", (req, res) => {
         }
     });
 
-    await updateFreeshotTokens(currentChannel);
-    
-    // Spawn a new VLC PRocess
-    const cvlcCommand = `DISPLAY=:0 cvlc ${channel.tokenizedUrl}`;
-    exec(cvlcCommand, (err) => {
-        if (err) {
-            Logger.warn(`Not possible to kill existing cvlc process: ${err.message}.`);
-        } else {
-            Logger.log(`Process cvlc killed.`);
-        }
-    });
+    updateFreeshotTokens(currentChannel).then((result) => {
+        // Spawn a new VLC PRocess
+        const cvlcCommand = `DISPLAY=:0 cvlc ${channel.tokenizedUrl}`;
+        exec(cvlcCommand, (err) => {
+            if (err) {
+                Logger.warn(`Not possible to kill existing cvlc process: ${err.message}.`);
+            } else {
+                Logger.log(`Process cvlc killed.`);
+            }
+        });
 
-    res.status(200).send(currentChannel);
+        res.status(200).send(currentChannel);
+    });
 });
 
 // #endregion Express Routes

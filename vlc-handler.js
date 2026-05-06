@@ -188,12 +188,48 @@ function getConfig() {
     config = JSON.parse(rawData);
 }
 
+async function getFreeshotChannels() {
+  return new Promise((resolve, reject) => {
+    // Allways clear channel list, before update
+    channels = [];
+
+    const rawData = fs.readFileSync(Constants.freeshotDatabaseFile, "utf8");
+    const freeshotData = JSON.parse(rawData);
+
+    if (freeshotData === undefined || freeshotData === null) {
+      throw new Error(`File ${Constants.freeshotDatabaseFile} does not contain any data!`);
+    }
+
+    channels = freeshotData.channels;
+
+    if (!config.isToUseAsPlayer) {
+      setInterval(
+        () => {
+          if (channels.length > 0) {
+            updateFreeshotTokens();
+          }
+        },
+        Constants.tokenUpdateIntervalInMilliseconds
+      );
+    }
+
+    if (channels.length > 0) {
+      resolve(channels);
+    } else {
+      reject(Constants.errorNoChannelsFound);
+    }
+
+  });
+}
+
+
 // #endregion functions
 
 // #region Main
 
-function bootApp() {
+async function bootApp() {
     getConfig();
+    await getFreeshotChannels();
 
     app.use(cors());
     app.listen(expressPort, () => {

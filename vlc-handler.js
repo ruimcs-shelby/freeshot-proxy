@@ -38,11 +38,6 @@ let config = null;
 let browser = null;
 let page = null;
 
-function getConfig() {
-    const rawData = fs.readFileSync(Constants.configFile, "utf-8");
-    config = JSON.parse(rawData);
-}
-
 // #region Express Routes
 
 app.get("/directplay/setchannel", (req, res) => {
@@ -192,7 +187,7 @@ function getConfig() {
 
 function bootApp() {
     getConfig();
-    
+
     const expressPort = 3000;
     const expressStaticPath = path.join(__dirname, "public");
     const app = express();

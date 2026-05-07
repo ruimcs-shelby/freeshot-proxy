@@ -83,6 +83,10 @@ app.get("/directplay/setchannel", (req, res) => {
     });
 });
 
+app.get("/directplay/getallchannels", (req, res) => {
+  res.status(200).send(JSON.stringify(channels));
+});
+
 // #endregion Express Routes
 
 // #region functions

@@ -88,7 +88,7 @@ app.get("/directplay/getallchannels", (req, res) => {
 
 // #region functions
 
-async function updateFreeshotTokens(currentChannel = "") {
+async function updateFreeshotTokens(currentChannel = "", tentative = 0) {
 
     // Initiate Browser only if not instantiated yet
     if (browser == null) {
@@ -174,21 +174,34 @@ async function updateFreeshotTokens(currentChannel = "") {
         await page.setRequestInterception(true);
 
         // Navigate and wait for the player to actually load the stream
-        await page.goto(
-            channel.url,
-            {
-                waitUntil: Constants.pageNetworkIdle2,
-                timeout: Constants.networkIdleTimeOutInMilliseconds
-            }
-        );
+        try {
+            await page.goto(
+                channel.url,
+                {
+                    waitUntil: Constants.pageNetworkIdle2,
+                    timeout: Constants.networkIdleTimeOutInMilliseconds
+                }
+            );
 
-        // Sometimes you need to wait a few extra seconds for the JS player to kick in
-        await new Promise(
-            resolve => setTimeout(
-                resolve,
-                Constants.extraTimeoutForJsProcessingInMilliseconds
-            )
-        );
+            // Sometimes you need to wait a few extra seconds for the JS player to kick in
+            await new Promise(
+                resolve => setTimeout(
+                    resolve,
+                    Constants.extraTimeoutForJsProcessingInMilliseconds
+                )
+            );
+        } catch (e) {
+            Logger.warn("An error occured: " + e.message);
+            tentative++;
+            if (tentative <= 3) {
+                Logger.warn("Tentative " + tentative + " of 3");
+                updateFreeshotTokens(currentChannel)
+            } else {
+                Logger.error("Out of tentatives");
+            }
+            
+        }
+        
     }
 
     return true;

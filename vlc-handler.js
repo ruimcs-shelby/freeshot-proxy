@@ -84,7 +84,7 @@ function attachRequestHandler() {
                 channel.tokenizedUrl = url;
 
                 // Kill VLC
-                exec("pkill -9 -f 'vlc|cvlc|vlc.bin'", () => {
+                exec("pkill -9 -x cvlc", () => {
                     Logger.log("Killed existing VLC instance");
                 });
 

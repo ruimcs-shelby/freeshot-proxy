@@ -101,45 +101,44 @@ async function updateFreeshotTokens(currentChannel = "", tentative = 0) {
         });
 
         page = await browser.newPage();
-    }
 
-    page.on('request', request => {
-        const url = request.url();
+        page.on('request', request => {
+            const url = request.url();
 
-        // Look for the master playlist or specific chunks
-        if (url.includes('.m3u8')) {
-            Logger.log(`Found Playlist:\n${url}`);
-            const currentChannel = channels.find(
-                c => url.includes(c.tokenizedUrlKey)
-            );
+            // Look for the master playlist or specific chunks
+            if (url.includes('.m3u8')) {
+                Logger.log(`Found Playlist:\n${url}`);
+                const currentChannel = channels.find(
+                    c => url.includes(c.tokenizedUrlKey)
+                );
 
-            if (currentChannel !== undefined && currentChannel !== null && currentChannel !== "") {
-                currentChannel.tokenizedUrl = url;
-                page.goto("about:blank");
+                if (currentChannel !== undefined && currentChannel !== null && currentChannel !== "") {
+                    currentChannel.tokenizedUrl = url;
+                    page.goto("about:blank");
 
-                // Spawn a new VLC PRocess
-                const cvlcCommand = `DISPLAY=:0 cvlc "${url}"`;
-                exec(cvlcCommand, (err) => {
-                    if (err) {
-                        Logger.warn(`Not possible to kill existing cvlc process: ${err.message}.`);
-                    } else {
-                        Logger.log(`Process cvlc killed.`);
-                    }
-                });
-            } else {
-                // Logger.warn(`Cannels: ${JSON.stringify(channels)}`);
-                Logger.error(`No channel found for playlist ${url}`);
+                    // Spawn a new VLC PRocess
+                    const cvlcCommand = `DISPLAY=:0 cvlc "${url}"`;
+                    exec(cvlcCommand, (err) => {
+                        if (err) {
+                            Logger.warn(`Not possible to kill existing cvlc process: ${err.message}.`);
+                        } else {
+                            Logger.log(`Process cvlc killed.`);
+                        }
+                    });
+                } else {
+                    // Logger.warn(`Cannels: ${JSON.stringify(channels)}`);
+                    Logger.error(`No channel found for playlist ${url}`);
+                }
             }
-        }
 
-        try {
-            request.continue();
-        } catch (e) {
-            Logger.error("request.continue(): " + e.message);
-        }
-        
-    });
+            try {
+                request.continue();
+            } catch (e) {
+                Logger.error("request.continue(): " + e.message);
+            }
 
+        });
+    }
     if (currentChannel === undefined && currentChannel === null && currentChannel === "") {
         for (let channel of channels) {
             if (channel.isToFetchToken) {
@@ -204,9 +203,9 @@ async function updateFreeshotTokens(currentChannel = "", tentative = 0) {
             } else {
                 Logger.error("Out of tentatives");
             }
-            
+
         }
-        
+
     }
 
     return true;

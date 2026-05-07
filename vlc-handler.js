@@ -128,11 +128,16 @@ async function updateFreeshotTokens(currentChannel = "", tentative = 0) {
                 });
             } else {
                 // Logger.warn(`Cannels: ${JSON.stringify(channels)}`);
-                // Logger.error(`No channel found for playlist ${url}`);
+                Logger.error(`No channel found for playlist ${url}`);
             }
         }
 
-        request.continue();
+        try {
+            request.continue();
+        } catch (e) {
+            Logger.error("request.continue(): " + e.message);
+        }
+        
     });
 
     if (currentChannel === undefined && currentChannel === null && currentChannel === "") {

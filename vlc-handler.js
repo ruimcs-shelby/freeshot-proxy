@@ -139,6 +139,7 @@ async function updateFreeshotTokens(currentChannel = "", tentative = 0) {
 
         });
     }
+
     if (currentChannel === undefined && currentChannel === null && currentChannel === "") {
         for (let channel of channels) {
             if (channel.isToFetchToken) {
@@ -199,13 +200,11 @@ async function updateFreeshotTokens(currentChannel = "", tentative = 0) {
             tentative++;
             if (tentative <= 3) {
                 Logger.warn("Tentative " + tentative + " of 3");
-                updateFreeshotTokens(currentChannel)
+                await updateFreeshotTokens(currentChannel)
             } else {
                 Logger.error("Out of tentatives");
             }
-
         }
-
     }
 
     return true;

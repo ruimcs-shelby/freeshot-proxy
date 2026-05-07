@@ -1,83 +1,63 @@
 // #region Imports
 
-// OS
-import { networkInterfaces } from "os";
 import { exec } from "child_process";
+import path from "path";
+import fs from "fs";
+import puppeteer from "puppeteer";
+import express from "express";
+import cors from "cors";
 
-// Custom
 import { Channel } from "./src/datatype/channel.js";
 import { Constants } from "./src/utils/constants.js";
 import { Logger } from "./src/utils/logger.js";
 
-// Path
-import path from "path";
 const __dirname = import.meta.dirname;
-
-// Cors
-import cors from "cors";
-
-// Puppeteer-core
-//import puppeteer from "puppeteer-core";
-import puppeteer from "puppeteer";
-
-// Express
-import express from "express";
-
-// File System
-import fs, { readFile } from "fs";
-import readline from "readline";
 
 // #endregion Imports
 
-// Channel list
+// Global State
 let channels = [];
-
-// Current channel
 let currentChannel = "";
-
-// Config
 let config = null;
 
-// Puppeteer Browser Object
 let browser = null;
 let page = null;
+let requestHandlerAttached = false;
 
-// #region Express Routes
+// Express
 const expressPort = 3000;
 const expressStaticPath = path.join(__dirname, "public");
 const app = express();
 
-app.get("/directplay/setchannel", (req, res) => {
-    // Ensure first the channel is not already pre-selected
-    if (currentChannel === req.query.channel) {
-        Logger.warn(`Channel ${req.query.channel} is already selected!`);
-        res.status(200).send(currentChannel);
-        return false;
+// #region Express Routes
+
+app.get("/directplay/setchannel", async (req, res) => {
+    const newChannel = req.query.channel;
+
+    if (!newChannel) {
+        return res.status(400).send("Missing channel");
     }
 
-    currentChannel = req.query.channel;
-    const channel = channels.find(c => c.name == req.params.channel);
+    if (currentChannel === newChannel) {
+        Logger.warn(`Channel ${newChannel} is already selected`);
+        return res.status(200).send(currentChannel);
+    }
+
+    currentChannel = newChannel;
     Logger.log(`Set channel request received: ${currentChannel}`);
 
-    // Kill VLC Process if exists
-    exec("pkill -f cvlc", (err) => {
-        if (err) {
-            Logger.warn(`Not possible to kill existing cvlc process: ${err.message}.`);
-        } else {
-            Logger.log(`Process cvlc killed.`);
-        }
+    // Kill VLC
+    exec("pkill -9 -f 'vlc|cvlc|vlc.bin'", () => {
+        Logger.log("Killed existing VLC instance (if any)");
     });
 
-    updateFreeshotTokens(currentChannel).then((result) => {
-        res.status(200).send(currentChannel);
-    });
+    await updateFreeshotTokens(currentChannel);
+    res.status(200).send(currentChannel);
 });
 
 app.get("/directplay/getcurrentchannel", (req, res) => {
-    Logger.log(`Get current channel request received: ${currentChannel}`);
     const channel = channels.find(c => c.name === currentChannel);
-    const channelAsString = JSON.stringify(channel);
-    res.status(200).send(channelAsString);
+    res.status(200).send(JSON.stringify(channel));
 });
 
 app.get("/directplay/getallchannels", (req, res) => {
@@ -86,171 +66,120 @@ app.get("/directplay/getallchannels", (req, res) => {
 
 // #endregion Express Routes
 
-// #region functions
+// #region Puppeteer Request Handler
 
-async function updateFreeshotTokens(currentChannel = "", tentative = 0) {
+function attachRequestHandler() {
+    if (requestHandlerAttached) return;
+    requestHandlerAttached = true;
 
-    // Initiate Browser only if not instantiated yet
-    if (browser == null) {
-        // Path to your local Chrome/Chromium
-        const chromePath = config.chromePath;
-        browser = await puppeteer.launch({
-            executablePath: chromePath,
-            headless: true,
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
-        });
+    page.on("request", async (request) => {
+        const url = request.url();
 
-        page = await browser.newPage();
+        if (url.includes(".m3u8")) {
+            Logger.log(`Found Playlist:\n${url}`);
 
-        page.on('request', request => {
-            const url = request.url();
+            const channel = channels.find(c => url.includes(c.tokenizedUrlKey));
 
-            // Look for the master playlist or specific chunks
-            if (url.includes('.m3u8')) {
-                Logger.log(`Found Playlist:\n${url}`);
-                const currentChannel = channels.find(
-                    c => url.includes(c.tokenizedUrlKey)
-                );
+            if (channel) {
+                channel.tokenizedUrl = url;
 
-                if (currentChannel !== undefined && currentChannel !== null && currentChannel !== "") {
-                    currentChannel.tokenizedUrl = url;
-                    page.goto("about:blank");
+                // Kill VLC
+                exec("pkill -9 -f 'vlc|cvlc|vlc.bin'", () => {
+                    Logger.log("Killed existing VLC instance");
+                });
 
-                    // Spawn a new VLC PRocess
-                    const cvlcCommand = `DISPLAY=:0 cvlc "${url}"`;
-                    exec(cvlcCommand, (err) => {
-                        if (err) {
-                            Logger.warn(`Not possible to kill existing cvlc process: ${err.message}.`);
-                        } else {
-                            Logger.log(`Process cvlc killed.`);
-                        }
-                    });
-                } else {
-                    // Logger.warn(`Cannels: ${JSON.stringify(channels)}`);
-                    Logger.error(`No channel found for playlist ${url}`);
-                }
-            }
-
-            try {
-                request.continue();
-            } catch (e) {
-                Logger.error("request.continue(): " + e.message);
-            }
-
-        });
-    }
-
-    if (currentChannel === undefined && currentChannel === null && currentChannel === "") {
-        for (let channel of channels) {
-            if (channel.isToFetchToken) {
-                try {
-                    // The Magic: Intercept all network traffic
-                    await page.setRequestInterception(true);
-
-                    // Navigate and wait for the player to actually load the stream
-                    await page.goto(
-                        channel.url,
-                        {
-                            waitUntil: Constants.pageNetworkIdle2,
-                            timeout: Constants.networkIdleTimeOutInMilliseconds
-                        }
-                    );
-
-                    // Sometimes you need to wait a few extra seconds for the JS player to kick in
-                    await new Promise(
-                        resolve => setTimeout(
-                            resolve,
-                            Constants.extraTimeoutForJsProcessingInMilliseconds
-                        )
-                    );
-                } catch (e) {
-                    console.error("Sniffing failed:", e.message);
-                } finally {
-
-                }
-            }
-        }
-    } else {
-        const channel = channels.find(c => c.name == currentChannel);
-        Logger.warn(`Channels: ${JSON.stringify(channels)}`);
-        Logger.warn(`Current Channel: ${currentChannel}`);
-
-        // The Magic: Intercept all network traffic
-        await page.setRequestInterception(true);
-
-        // Navigate and wait for the player to actually load the stream
-        try {
-            await page.goto(
-                channel.url,
-                {
-                    waitUntil: Constants.pageNetworkIdle2,
-                    timeout: Constants.networkIdleTimeOutInMilliseconds
-                }
-            );
-
-            // Sometimes you need to wait a few extra seconds for the JS player to kick in
-            await new Promise(
-                resolve => setTimeout(
-                    resolve,
-                    Constants.extraTimeoutForJsProcessingInMilliseconds
-                )
-            );
-        } catch (e) {
-            Logger.warn("An error occured: " + e.message);
-            tentative++;
-            if (tentative <= 3) {
-                Logger.warn("Tentative " + tentative + " of 3");
-                await updateFreeshotTokens(currentChannel)
+                // Start VLC
+                const cmd = `DISPLAY=:0 cvlc "${url}" --play-and-exit &`;
+                exec(cmd, (err) => {
+                    if (err) Logger.error("Failed to start VLC: " + err.message);
+                    else Logger.log("Started VLC with playlist");
+                });
             } else {
-                Logger.error("Out of tentatives");
+                Logger.error(`No channel found for playlist ${url}`);
             }
         }
-    }
 
-    return true;
-}
-
-function getConfig() {
-    const rawData = fs.readFileSync(Constants.configFile, "utf-8");
-    config = JSON.parse(rawData);
-}
-
-async function getFreeshotChannels() {
-    return new Promise((resolve, reject) => {
-        // Allways clear channel list, before update
-        channels = [];
-
-        const rawData = fs.readFileSync(Constants.freeshotDatabaseFile, "utf8");
-        const freeshotData = JSON.parse(rawData);
-
-        if (freeshotData === undefined || freeshotData === null) {
-            throw new Error(`File ${Constants.freeshotDatabaseFile} does not contain any data!`);
+        try {
+            request.continue();
+        } catch (e) {
+            Logger.error("request.continue(): " + e.message);
         }
-
-        channels = freeshotData.channels;
-
-        if (!config.isToUseAsPlayer) {
-            setInterval(
-                () => {
-                    if (currentChannel !== undefined && currentChannel !== null && currentChannel !== "") {
-                        updateFreeshotTokens(currentChannel);
-                    }
-                },
-                Constants.tokenUpdateIntervalInMilliseconds
-            );
-        }
-
-        if (channels.length > 0) {
-            resolve(channels);
-        } else {
-            reject(Constants.errorNoChannelsFound);
-        }
-
     });
 }
 
+// #endregion Puppeteer Request Handler
 
-// #endregion functions
+// #region Core Logic
+
+async function updateFreeshotTokens(channelName, attempt = 0) {
+    if (!browser) {
+        const chromePath = config.chromePath;
+
+        browser = await puppeteer.launch({
+            executablePath: chromePath,
+            headless: true,
+            args: ["--no-sandbox", "--disable-setuid-sandbox"]
+        });
+
+        page = await browser.newPage();
+        await page.setRequestInterception(true);
+        attachRequestHandler();
+    }
+
+    const channel = channels.find(c => c.name === channelName);
+
+    if (!channel) {
+        Logger.error(`Channel ${channelName} not found`);
+        return;
+    }
+
+    try {
+        await page.goto(channel.url, {
+            waitUntil: Constants.pageNetworkIdle2,
+            timeout: Constants.networkIdleTimeOutInMilliseconds
+        });
+
+        await new Promise(resolve =>
+            setTimeout(resolve, Constants.extraTimeoutForJsProcessingInMilliseconds)
+        );
+
+    } catch (e) {
+        Logger.warn(`Navigation error: ${e.message}`);
+
+        if (attempt < 3) {
+            Logger.warn(`Retrying (${attempt + 1}/3)...`);
+            return updateFreeshotTokens(channelName, attempt + 1);
+        }
+
+        Logger.error("Failed after 3 attempts");
+    }
+}
+
+function getConfig() {
+    const raw = fs.readFileSync(Constants.configFile, "utf-8");
+    config = JSON.parse(raw);
+}
+
+async function getFreeshotChannels() {
+    const raw = fs.readFileSync(Constants.freeshotDatabaseFile, "utf8");
+    const data = JSON.parse(raw);
+
+    if (!data || !data.channels) {
+        throw new Error("Invalid channel database");
+    }
+
+    channels = data.channels;
+
+    if (!config.isToUseAsPlayer) {
+        setInterval(() => {
+            if (currentChannel) {
+                updateFreeshotTokens(currentChannel);
+            }
+        }, Constants.tokenUpdateIntervalInMilliseconds);
+    }
+}
+
+// #endregion Core Logic
 
 // #region Main
 
@@ -259,11 +188,11 @@ async function bootApp() {
     await getFreeshotChannels();
 
     app.use(cors());
-    app.listen(expressPort, () => {
-        Logger.log(`Express listen on http://localhost:${expressPort}`);
-    });
-
     app.use(express.static(expressStaticPath));
+
+    app.listen(expressPort, () => {
+        Logger.log(`Express listening on http://localhost:${expressPort}`);
+    });
 }
 
 bootApp();

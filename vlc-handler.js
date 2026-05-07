@@ -83,6 +83,13 @@ app.get("/directplay/setchannel", (req, res) => {
     });
 });
 
+app.get("/directplay/getcurrentchannel", (req, res) => {
+  Logger.log(`Get current channel request received: ${currentChannel}`);
+  const channel = channels.find(c => c.name === currentChannel);
+  const channelAsString = JSON.stringify(channel);
+  res.status(200).send(channelAsString);
+});
+
 app.get("/directplay/getallchannels", (req, res) => {
   res.status(200).send(JSON.stringify(channels));
 });

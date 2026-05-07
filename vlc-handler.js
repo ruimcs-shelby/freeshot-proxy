@@ -69,29 +69,19 @@ app.get("/directplay/setchannel", (req, res) => {
     });
 
     updateFreeshotTokens(currentChannel).then((result) => {
-        // Spawn a new VLC PRocess
-        const cvlcCommand = `DISPLAY=:0 cvlc ${channel.tokenizedUrl}`;
-        exec(cvlcCommand, (err) => {
-            if (err) {
-                Logger.warn(`Not possible to kill existing cvlc process: ${err.message}.`);
-            } else {
-                Logger.log(`Process cvlc killed.`);
-            }
-        });
-
         res.status(200).send(currentChannel);
     });
 });
 
 app.get("/directplay/getcurrentchannel", (req, res) => {
-  Logger.log(`Get current channel request received: ${currentChannel}`);
-  const channel = channels.find(c => c.name === currentChannel);
-  const channelAsString = JSON.stringify(channel);
-  res.status(200).send(channelAsString);
+    Logger.log(`Get current channel request received: ${currentChannel}`);
+    const channel = channels.find(c => c.name === currentChannel);
+    const channelAsString = JSON.stringify(channel);
+    res.status(200).send(channelAsString);
 });
 
 app.get("/directplay/getallchannels", (req, res) => {
-  res.status(200).send(JSON.stringify(channels));
+    res.status(200).send(JSON.stringify(channels));
 });
 
 // #endregion Express Routes
@@ -123,11 +113,19 @@ async function updateFreeshotTokens(currentChannel = "") {
                 c => url.includes(c.tokenizedUrlKey)
             );
 
-            if (currentChannel !== undefined && currentChannel !== null) {
+            if (currentChannel !== undefined && currentChannel !== null && currentChannel !== "") {
                 currentChannel.tokenizedUrl = url;
                 page.goto("about:blank");
-                // Logger.warn(`Current Channel: ${JSON.stringify(currentChannel)}`);
-                // Logger.warn(`Cannels: ${JSON.stringify(channels)}`);
+
+                // Spawn a new VLC PRocess
+                const cvlcCommand = `DISPLAY=:0 cvlc "${url}"`;
+                exec(cvlcCommand, (err) => {
+                    if (err) {
+                        Logger.warn(`Not possible to kill existing cvlc process: ${err.message}.`);
+                    } else {
+                        Logger.log(`Process cvlc killed.`);
+                    }
+                });
             } else {
                 // Logger.warn(`Cannels: ${JSON.stringify(channels)}`);
                 // Logger.error(`No channel found for playlist ${url}`);
@@ -137,7 +135,7 @@ async function updateFreeshotTokens(currentChannel = "") {
         request.continue();
     });
 
-    if (currentChannel === undefined || currentChannel === null || currentChannel === "") {
+    if (currentChannel === undefined && currentChannel === null && currentChannel === "") {
         for (let channel of channels) {
             if (channel.isToFetchToken) {
                 try {
@@ -202,37 +200,37 @@ function getConfig() {
 }
 
 async function getFreeshotChannels() {
-  return new Promise((resolve, reject) => {
-    // Allways clear channel list, before update
-    channels = [];
+    return new Promise((resolve, reject) => {
+        // Allways clear channel list, before update
+        channels = [];
 
-    const rawData = fs.readFileSync(Constants.freeshotDatabaseFile, "utf8");
-    const freeshotData = JSON.parse(rawData);
+        const rawData = fs.readFileSync(Constants.freeshotDatabaseFile, "utf8");
+        const freeshotData = JSON.parse(rawData);
 
-    if (freeshotData === undefined || freeshotData === null) {
-      throw new Error(`File ${Constants.freeshotDatabaseFile} does not contain any data!`);
-    }
+        if (freeshotData === undefined || freeshotData === null) {
+            throw new Error(`File ${Constants.freeshotDatabaseFile} does not contain any data!`);
+        }
 
-    channels = freeshotData.channels;
+        channels = freeshotData.channels;
 
-    if (!config.isToUseAsPlayer) {
-      setInterval(
-        () => {
-          if (currentChannel !== undefined && currentChannel !== null && currentChannel !== "") {
-            updateFreeshotTokens(currentChannel);
-          }
-        },
-        Constants.tokenUpdateIntervalInMilliseconds
-      );
-    }
+        if (!config.isToUseAsPlayer) {
+            setInterval(
+                () => {
+                    if (currentChannel !== undefined && currentChannel !== null && currentChannel !== "") {
+                        updateFreeshotTokens(currentChannel);
+                    }
+                },
+                Constants.tokenUpdateIntervalInMilliseconds
+            );
+        }
 
-    if (channels.length > 0) {
-      resolve(channels);
-    } else {
-      reject(Constants.errorNoChannelsFound);
-    }
+        if (channels.length > 0) {
+            resolve(channels);
+        } else {
+            reject(Constants.errorNoChannelsFound);
+        }
 
-  });
+    });
 }
 
 

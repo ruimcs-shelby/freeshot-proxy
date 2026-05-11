@@ -68,7 +68,7 @@ app.get("/directplay/getallchannels", (req, res) => {
 
 // #region Puppeteer Request Handler
 
-function attachRequestHandler() {
+async function attachRequestHandler() {
     if (requestHandlerAttached) return;
     requestHandlerAttached = true;
 
@@ -97,6 +97,14 @@ function attachRequestHandler() {
                         if (err) Logger.error("Failed to start VLC: " + err.message);
                         else Logger.log("Started VLC with playlist");
                     });
+
+                    // Sometimes you need to wait a few extra seconds for the JS player to kick in
+                    await new Promise(
+                        resolve => setTimeout(
+                            resolve,
+                            5000
+                        )
+                    );
                 }
 
             } else {

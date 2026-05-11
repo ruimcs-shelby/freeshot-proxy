@@ -81,6 +81,9 @@ function attachRequestHandler() {
             const channel = channels.find(c => url.includes(c.tokenizedUrlKey));
 
             if (channel) {
+                if (channel.tokenizedUrl === url) {
+                    return;
+                }
                 channel.tokenizedUrl = url;
 
                 // Kill VLC

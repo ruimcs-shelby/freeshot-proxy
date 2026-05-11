@@ -81,22 +81,24 @@ function attachRequestHandler() {
             const channel = channels.find(c => url.includes(c.tokenizedUrlKey));
 
             if (channel) {
-                if (channel.tokenizedUrl === url) {
-                    return;
+                if (channel.tokenizedUrl !== url) {
+                    Logger.error(`--- / ---\nurl: ${url}\nchannel.tokenizedUrl = ${channel.tokenizedUrl}\n--- / ---`);
+
+                    channel.tokenizedUrl = url;
+
+                    // Kill VLC
+                    exec("pkill -9 -x cvlc", () => {
+                        Logger.log("Killed existing VLC instance");
+                    });
+
+                    // Start VLC
+                    const cmd = `DISPLAY=:0 cvlc "${url}" --play-and-exit &`;
+                    exec(cmd, (err) => {
+                        if (err) Logger.error("Failed to start VLC: " + err.message);
+                        else Logger.log("Started VLC with playlist");
+                    });
                 }
-                channel.tokenizedUrl = url;
 
-                // Kill VLC
-                exec("pkill -9 -x cvlc", () => {
-                    Logger.log("Killed existing VLC instance");
-                });
-
-                // Start VLC
-                const cmd = `DISPLAY=:0 cvlc "${url}" --play-and-exit &`;
-                exec(cmd, (err) => {
-                    if (err) Logger.error("Failed to start VLC: " + err.message);
-                    else Logger.log("Started VLC with playlist");
-                });
             } else {
                 Logger.error(`No channel found for playlist ${url}`);
             }
@@ -171,7 +173,7 @@ async function getFreeshotChannels() {
         throw new Error("Invalid channel database");
     }
 
-    channels = data.channels;
+    channels = data.channels.filter(c => c.isToFetchToken === true);
 
     if (!config.isToUseAsPlayer) {
         setInterval(() => {

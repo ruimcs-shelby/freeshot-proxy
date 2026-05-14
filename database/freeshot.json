@@ -4,6 +4,7 @@
             "name": "RTP1",
             "url": "https://freeshot.live/live-tv/rtp-1/213",
             "isToFetchToken": false,
+            "tokenizedUrlKey": "RTP1/index",
             "directPlayLink": "https://freeshot.live/embed/RTP1.php",
             "img": "images/channels/rtp1.jpg"
         },
@@ -11,6 +12,7 @@
             "name": "RTP2",
             "url": "https://freeshot.live/live-tv/rtp-2/234",
             "isToFetchToken": false,
+            "tokenizedUrlKey": "RTP2/index",
             "directPlayLink": "https://freeshot.live/embed/RTP2.php",
             "img": "images/channels/rtp2.jpg"
         },
@@ -18,6 +20,7 @@
             "name": "SIC",
             "url": "https://freeshot.live/live-tv/sic/36",
             "isToFetchToken": false,
+            "tokenizedUrlKey": "SIC/index",
             "directPlayLink": "https://freeshot.live/embed/SIC.php",
             "img": "images/channels/sic.jpg"
         },
@@ -25,12 +28,14 @@
             "name": "TVI",
             "url": "https://freeshot.live/live-tv/tvi/47",
             "isToFetchToken": false,
+            "tokenizedUrlKey": "TVI/index",
             "directPlayLink": "https://freeshot.live/embed/TVI.php",
             "img": "images/channels/tvi.jpg"
         },
         {
             "name": "RTP3",
             "url": "https://freeshot.live/live-tv/rtp-3/335",
+            "tokenizedUrlKey": "RTP3/index",
             "isToFetchToken": false,
             "directPlayLink": "https://freeshot.live/embed/RTP3.php",
             "img": "images/channels/rtp3.jpg"
@@ -38,6 +43,7 @@
         {
             "name": "SICNOTICIAS",
             "url": "https://freeshot.live/live-tv/sic-noticias/48",
+            "tokenizedUrlKey": "SIC-NOTICIAS/index",
             "isToFetchToken": false,
             "directPlayLink": "https://freeshot.live/embed/SICNoticias.php",
             "img": "images/channels/sic-noticias.png"

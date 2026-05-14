@@ -6,6 +6,10 @@ import fs from "fs";
 import puppeteer from "puppeteer";
 import express from "express";
 import cors from "cors";
+import net from "net";
+
+const VLC_HOST = "rpi001";
+const VLC_PORT = 4212;
 
 import { Channel } from "./src/datatype/channel.js";
 import { Constants } from "./src/utils/constants.js";
@@ -46,11 +50,6 @@ app.get("/directplay/setchannel", async (req, res) => {
     currentChannel = newChannel;
     Logger.log(`Set channel request received: ${currentChannel}`);
 
-    // Kill VLC
-    exec("pkill -9 -f 'vlc|cvlc|vlc.bin'", () => {
-        Logger.log("Killed existing VLC instance (if any)");
-    });
-
     await updateFreeshotTokens(currentChannel);
     res.status(200).send(currentChannel);
 });
@@ -82,29 +81,10 @@ async function attachRequestHandler() {
 
             if (channel) {
                 if (channel.tokenizedUrl !== url) {
+                    channel.tokenizedUrl = url;
                     Logger.error(`--- / ---\nurl: ${url}\nchannel.tokenizedUrl = ${channel.tokenizedUrl}\n--- / ---`);
 
-                    channel.tokenizedUrl = url;
-
-                    // Kill VLC
-                    exec("pkill -9 -x cvlc", () => {
-                        Logger.log("Killed existing VLC instance");
-                    });
-
-                    // Start VLC
-                    const cmd = `DISPLAY=:0 cvlc "${url}" --play-and-exit &`;
-                    exec(cmd, (err) => {
-                        if (err) Logger.error("Failed to start VLC: " + err.message);
-                        else Logger.log("Started VLC with playlist");
-                    });
-
-                    // Sometimes you need to wait a few extra seconds for the JS player to kick in
-                    await new Promise(
-                        resolve => setTimeout(
-                            resolve,
-                            5000
-                        )
-                    );
+                    sendToVLC(`add ${url}`);
                 }
 
             } else {
@@ -181,7 +161,8 @@ async function getFreeshotChannels() {
         throw new Error("Invalid channel database");
     }
 
-    channels = data.channels.filter(c => c.isToFetchToken === true);
+    // channels = data.channels.filter(c => c.isToFetchToken === true);
+    channels = data.channels;
 
     if (!config.isToUseAsPlayer) {
         setInterval(() => {
@@ -190,6 +171,30 @@ async function getFreeshotChannels() {
             }
         }, Constants.tokenUpdateIntervalInMilliseconds);
     }
+}
+
+
+function sendToVLC(command) {
+    return new Promise((resolve, reject) => {
+        try {
+            const client = new net.Socket();
+
+            client.connect(VLC_PORT, VLC_HOST, () => {
+                client.write(command + "\n");
+            });
+
+            client.on("data", (data) => {
+                // VLC responds with something like "> "
+                client.destroy();
+                resolve(data.toString());
+            });
+
+            client.on("error", reject);
+        } catch (e) {
+            Logger.error(`Send to VLC (command: ${command}) returned the following error: ${e.message}`);
+        }
+
+    });
 }
 
 // #endregion Core Logic
